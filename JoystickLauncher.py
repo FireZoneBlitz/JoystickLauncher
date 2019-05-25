@@ -2,8 +2,8 @@ import json
 from Tkinter import *
 import subprocess
 from subprocess import call
-
-
+import os
+import playsound
 ###########  Global Settings For Your Arcade System
 
 
@@ -18,9 +18,13 @@ MarqueeWidth = 500
 ScreenshotWidth = 450
 ScreenshowHeight = 550
 VerticalSpacing = 100
+ShowControlPanel = 0
 # total buttons per user on console
 ButtonCount = 2
 ButtonOrder = "red,red"
+
+launchEffectFile = "smb_powerup.wav"
+moveEffectFile = "smb_fireball.wav"
 
 ###########  End Global Settings
 
@@ -46,14 +50,16 @@ root.config(cursor="none")
 ###########  Functions
 
 def upKey(event):
+    playsound.playsound(moveEffectFile)
     PreviousRom()
 
 def downKey(event):
+    playsound.playsound(moveEffectFile)
     NextRom()
 
 def controlKey(event):
-    #os.system("aplay " + launchEffectFile)
-    call(["mame", "pbobblen"])
+    playsound.playsound(launchEffectFile)
+    os.system("mame " + CurrentRom["Rom Name"])
 
 def PreviousRom():
     global RomIndex
@@ -112,20 +118,25 @@ def UpdateScreen():
 
 
     ### Control Panel (show joystick and used buttons)
-    ControlPanelLabel = Label(root,bg=BackgroundColor,fg=FontColor,text="Control Panel",font=(FontName,GameFontSize))
-    ControlPanelLabel.pack()
+    if ShowControlPanel == 1:
+    
+        ControlPanelLabel = Label(root,bg=BackgroundColor,fg=FontColor,text="Control Panel",font=(FontName,GameFontSize))
+        ControlPanelLabel.pack()    
 
-    xloc = int(ScreenWidth) / 2 - int(ControlPanelLabel.winfo_reqwidth() / 2)
-    yloc = yloc + int(RomLabel.winfo_reqheight()) + VerticalSpacing
+        xloc = int(ScreenWidth) / 2 - int(ControlPanelLabel.winfo_reqwidth() / 2)
+        yloc = yloc + int(RomLabel.winfo_reqheight()) + VerticalSpacing
 
-    ControlPanelLabel.place(x=xloc,y=yloc)
+        ControlPanelLabel.place(x=xloc,y=yloc)
 
     ### Screenshot
     ScreenshotLabel = Label(root,bg=BackgroundColor,fg=FontColor,text="Screenshot",font=(FontName,GameFontSize))
     ScreenshotLabel.pack()
 
     xloc = int(ScreenWidth) / 2 - int(ScreenshotLabel.winfo_reqwidth() / 2)
-    yloc = yloc + int(ControlPanelLabel.winfo_reqheight()) + VerticalSpacing
+    if ShowControlPanel == 1:
+        yloc = yloc + int(ControlPanelLabel.winfo_reqheight()) + VerticalSpacing
+    else:
+        yloc = yloc + int(RomLabel.winfo_reqheight()) + VerticalSpacing
 
     ScreenshotLabel.place(x=xloc,y=yloc)
 
