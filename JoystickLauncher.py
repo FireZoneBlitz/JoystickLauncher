@@ -1,5 +1,5 @@
 import json
-from Tkinter import *
+from tkinter import *
 import subprocess
 from subprocess import call
 import os
